@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 실행자 서비스 빈 정의 스캔 경로 -->
+	<context:component-scan base-package="com.brm.web.service" />
+
+	<!-- 메시지 디스패처 빈 정의 -->
+	<bean id="dispatcher" class="com.brm.web.MessageDispatcher" />
+
+	<!-- JSON 메시징 매퍼 -->
+	<bean id="gson" class="org.apache.camel.component.gson.GsonDataFormat">
+		<property name="unmarshalType" value="java.util.HashMap" />
+		<property name="serializeNulls" value="true" />
+	</bean>
+
+	<bean id="twitter" class="org.apache.camel.component.twitter.TwitterComponent">
+		<property name="consumerKey" value="rsv2EAY6Zqq5ikm2tUmHg" />
+		<property name="consumerSecret" value="l2h8YOB1uEK7LJ8lIypPOJTMAjWfuAiO1k601hgKaTs" />
+		<property name="accessToken" value="548573273-yp6busuob3qVrd3nKSZi5XjEQa0pbLULoXNxguVd" />
+		<property name="accessTokenSecret" value="SpOEXlFIcZseVBeqitKsLjoCwArOYCZ65hhdi4G4x0" />
+	</bean>
+
+	<!-- 라우팅 정의 -->
+	<camelContext xmlns="http://camel.apache.org/schema/spring">
+		<!-- 서비스 서버 라우팅 정의 -->
+		<route id="ServiceServer">
+			<!-- HTTP 소비자 -->
+			<from uri="netty-http:http://0.0.0.0:8080?matchOnUriPrefix=true" />
+			<unmarshal ref="gson" />
+			<!-- 메시지 디스패처 -->
+			<to uri="bean:dispatcher?method=dispatch" />
+			<marshal ref="gson" />
+		</route>
+		<!-- 트위터 라우팅 정의 -->
+		<route id="Twitter">
+			<from uri="direct:twitter" />
+			<to uri="twitter://timeline/user" />
+		</route>
+	</camelContext>
+
+</beans>
+
+
