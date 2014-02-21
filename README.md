@@ -25,7 +25,7 @@ HelloService는 서비스가 정상적으로 동작되는지를 확인하는 기
 ```
 	URL : http://localhost:8080/HelloService  
 	Content Type : application/json
-	Content : {name : "홍길동"}
+	Content : {"name" : "홍길동"}
 ```    
 2) Poster 응답이 다음과 같으면 웹 서비스가 정상적으로 동작한 것입니다.
 ```
@@ -59,7 +59,7 @@ TwitterService는 트윗을 전송하는 웹 서비스입니다.
 ```
     URL : http://localhost:8080/TwitterService
     Content Type : application/json
-    Content : {tweet : "트윗 테스트입이다."} 
+    Content : {"tweet" : "트윗 테스트입이다."} 
 ```
 
 3) Poster 응답이 다음과 같으면 트위터 서비스가 정상적으로 동작한 것입니다. 
